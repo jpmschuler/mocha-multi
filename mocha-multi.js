@@ -16,7 +16,7 @@ const { stdout } = process;
 function defineGetter(obj, prop, get, set) {
   Object.defineProperty(obj, prop, { get, set });
 }
-const waitOn = fn => v => new Promise(resolve => fn(v, () => resolve()));
+const waitOn = (fn) => (v) => new Promise((resolve) => fn(v, () => resolve()));
 const waitStream = waitOn((r, fn) => r.end(fn));
 
 function awaitOnExit(waitFor) {
@@ -231,13 +231,12 @@ function initReportersAndStreams(runner, setup, multiOptions) {
 function promiseProgress(items, fn) {
   let count = 0;
   fn(count);
-  items.forEach(v => v.then(() => {
+  items.forEach((v) => v.then(() => {
     count += 1;
     fn(count);
   }));
   return Promise.all(items);
 }
-
 
 /**
  * Override done to allow done processing for any reporters that have a done method.
@@ -245,7 +244,7 @@ function promiseProgress(items, fn) {
 function done(failures, fn, reportersWithDone, waitFor = identity) {
   const count = reportersWithDone.length;
   const waitReporter = waitOn((r, f) => r.done(failures, f));
-  const progress = v => debug('Awaiting on %j reporters to invoke done callback.', count - v);
+  const progress = (v) => debug('Awaiting on %j reporters to invoke done callback.', count - v);
   promiseProgress(reportersWithDone.map(waitReporter), progress)
     .then(() => {
       debug('All reporters invoked done callback.');
@@ -269,11 +268,11 @@ function mochaMulti(runner, options) {
   // wait for it to complete when done.
   const reportersAndStreams = initReportersAndStreams(runner, setup, options);
   const streams = reportersAndStreams
-    .map(v => v.stream)
+    .map((v) => v.stream)
     .filter(identity);
   const reportersWithDone = reportersAndStreams
-    .map(v => v.reporter)
-    .filter(v => v.done);
+    .map((v) => v.reporter)
+    .filter((v) => v.done);
 
   // we actually need to wait streams only if they are present
   const waitFor = streams.length > 0 ?

@@ -40,7 +40,6 @@ const reportersWithOptions = []
     };
   }));
 
-
 should(process.env.multi).not.be.ok;
 
 process.setMaxListeners(reportersWithOptions.length);
